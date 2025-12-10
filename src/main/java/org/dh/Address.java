@@ -1,12 +1,28 @@
 package org.dh;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
+@Getter
 public class Address {
-    private int streetNo;
-    private String street;
-    private String city;
-    private Province province;
+    @Setter private int streetNo;
+    @Setter private String street;
+    @Setter private String city;
+    @Setter private Province province;
     private String postalCode;
 
+    /**
+     * Checks if a postal code is valid with the following rules:
+     * The length can only be 6 characters, and the postal code
+     * must follow the CDCDCD format, where C is a character and
+     * D is a digit.
+     * @param postalCode The postal code to check
+     * @return True if the postal code is valid. False if it is not valid
+     */
     public static boolean isPostalCodeValid(String postalCode) {
         if (postalCode.length() != 6) {
             return false;
@@ -30,6 +46,10 @@ public class Address {
         this.street = street;
         this.province = province;
         this.postalCode = (isPostalCodeValid(postalCode)) ? postalCode.toUpperCase() : null;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = (isPostalCodeValid(postalCode)) ? postalCode.toUpperCase() : this.postalCode;
     }
 
     public enum Province {
