@@ -20,6 +20,10 @@ public class Department {
      * @return True if the department name is valid. False if the department name is invalid
      */
     public static boolean isDepartmentNameValid(String departmentName) {
+        if (departmentName == null) {
+            return false;
+        }
+
         char[] chars = departmentName.toCharArray();
 
         for (char c : chars) {

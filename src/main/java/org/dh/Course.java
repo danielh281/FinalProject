@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode
@@ -16,6 +17,7 @@ public class Course {
     private Department department;
     private List<Assignment> assignments;
     private List<Student> registeredStudents;
+    private List<Integer> finalScores;
     private static int nextId = 1;
 
     public Course(
@@ -66,11 +68,27 @@ public class Course {
             assignment.getScores().add(null);
         }
 
+        finalScores.add(null);
+
         return true;
     }
 
+    /**
+     * Calculates the weighted average score of a student
+     * @return
+     */
     public int[] calcStudentsAverage() {
         int[] studentsAvg = new int[registeredStudents.size()];
+
+        for (int i = 0; i < registeredStudents.size(); i++) {
+            int total = 0;
+
+            for (Assignment assignment : assignments) {
+                total += assignment.getScores().get(i);
+            }
+
+            studentsAvg[i] = total / assignments.size();
+        }
 
         return studentsAvg;
     }
@@ -92,15 +110,84 @@ public class Course {
      * student.
      */
     public void generateScores() {
+        for (int i = 0; i < registeredStudents.size(); i++) {
+            int total = 0;
 
+            for (Assignment assignment : assignments) {
+                assignment.generateRandomScore();
+            }
+        }
     }
 
     /**
-     * Displays the scores of a course in a table.
+     * Displays the scores of each student of a course in a table.
      * The assignment averages and the student average
      * is shown.
      */
     public void displayScores() {
+        System.out.printf("Course: %s(%s)\n", courseName, courseId);
+        System.out.printf("%24s", "");
 
+        for (int i = 0; i < assignments.size(); i++) {
+            System.out.printf("%-15s", assignments.get(i).getAssignmentName());
+        }
+
+        System.out.printf("%15s\n", "Final Score");
+
+        for (int i = 0; i < registeredStudents.size(); i++) {
+            int[] scores = new int[assignments.size()];
+            int[] weightedScores = new int[assignments.size()];
+
+            System.out.printf("%22s", registeredStudents.get(i).getStudentName());
+
+            for (int j = 0; j < assignments.size(); j++) {
+                scores[j] = assignments.get(j).getScores().get(i);
+                weightedScores[j] = (int) (scores[j] * (assignments.get(j).getWeight() / 100));
+
+                System.out.printf("%14d", scores[j]);
+            }
+
+            int finalScore = 0;
+
+            for (int j = 0; j < weightedScores.length; j++) {
+                finalScore += weightedScores[j];
+            }
+
+            System.out.printf("%14d\n", finalScore);
+        }
+    }
+
+    /**
+     * Converts the course to a simplified string containing;
+     * the course id, the course name, the course credits and
+     * the department name.
+     * @return The simplified string of the course
+     */
+    public String toSimplifiedString() {
+        return "Course{" +
+                "courseId='" + courseId + '\'' +
+                ", courseName='" + courseName + '\'' +
+                ", credits=" + credits +
+                ", departmentName=" + department.getDepartmentName() +
+                '}';
+    }
+
+    @Override
+    public String toString() {
+        String str = "Course{" +
+                "courseId='" + courseId + '\'' +
+                ", courseName='" + courseName + '\'' +
+                ", departmentName=" + department.getDepartmentName() +
+                ", assignments=" + assignments +
+                ", registeredStudents={";
+
+        for (Student student : registeredStudents) {
+            str += student.toSimplifiedString() + ",";
+        }
+
+        str += "}, isAssignmentWeightValid=" +
+                isAssignmentWeightValid() + "}";
+
+        return str;
     }
 }

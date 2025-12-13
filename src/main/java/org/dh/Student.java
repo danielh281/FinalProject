@@ -1,23 +1,31 @@
 package org.dh;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import util.Util;
+
+import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode
+@Getter
 public class Student {
-    private String studentId;
+    @Setter private String studentId;
     private String studentName;
-    private Gender gender;
-    private Address address;
-    private Department department;
-    private List<Course> registeredCourses;
+    @Setter private Gender gender;
+    @Setter private Address address;
+    @Setter private Department department;
+    @Setter private List<Course> registeredCourses;
     private static int nextId = 1;
 
-    public Student(String studentName, Gender gender, Address address, Department department, List<Course> registeredCourses) {
+    public Student(String studentName, Gender gender, Address address, Department department) {
         this.studentId = String.format("S%06d", nextId++);
-        this.studentName = studentName;
+        this.studentName = Util.toTitleCase(studentName);
         this.gender = gender;
         this.address = address;
         this.department = department;
-        this.registeredCourses = registeredCourses;
+        this.registeredCourses = new ArrayList<>();
     }
 
     /**
@@ -32,9 +40,6 @@ public class Student {
             return false;
         }
 
-        /*
-        add assignment appending in Student Class 1.
-         */
         registeredCourses.add(course);
         course.registerStudent(this);
 
@@ -57,6 +62,45 @@ public class Student {
         course.getRegisteredStudents().remove(this);
 
         return true;
+    }
+
+    /**
+     * Converts a student to a simple string containing;
+     * their student id, their student name and their department name.
+     * @return The student as a string with; studentId, studentName, departmentName
+     */
+    public String toSimplifiedString() {
+        return "Student{" +
+                "studentId='" + studentId + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", departmentName=" + department.getDepartmentName() +
+                '}';
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = Util.toTitleCase(studentName);
+    }
+
+    @Override
+    public String toString() {
+        String str = "Student{" +
+                "studentId='" + studentId + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", gender=" + gender +
+                ", address=" + address +
+                ", department=" + department +
+                ", registeredCourses=";
+
+        for (Course course : registeredCourses) {
+            str += String.format(
+                    "Course{courseId = %s, courseName = %s, departmentName = %s}",
+                    course.getCourseId(),
+                    course.getCourseName(),
+                    course.getDepartment().getDepartmentName()
+            );
+        }
+
+        return str;
     }
 
     public enum Gender {

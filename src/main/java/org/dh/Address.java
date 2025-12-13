@@ -31,9 +31,9 @@ public class Address {
         char[] characters = postalCode.toCharArray();
 
         for (int i = 0; i < characters.length; i++) {
-            if (i % 2 != 0 && !Character.isLetter(characters[i])) {
+            if ((i + 1) % 2 != 0 && !Character.isLetter(characters[i])) {
                 return false;
-            } else if (i % 2 == 0 & !Character.isDigit(characters[i])) {
+            } else if ((i + 1) % 2 == 0 & !Character.isDigit(characters[i])) {
                 return false;
             }
         }

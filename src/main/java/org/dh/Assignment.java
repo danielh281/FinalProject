@@ -3,6 +3,7 @@ package org.dh;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -15,11 +16,11 @@ public class Assignment {
     private List<Integer> scores;
     private static int nextId = 1;
 
-
     public Assignment(String assignmentName, double weight) {
         this.assignmentId = String.valueOf(nextId++);
         this.assignmentName = assignmentName;
         this.weight = weight;
+        this.scores = new ArrayList<>();
     }
 
     /**
@@ -28,6 +29,10 @@ public class Assignment {
      */
     public double calcAssignmentAvg() {
         double total = 0;
+
+        for (Integer score : scores) {
+            total += score;
+        }
 
         return total / scores.size();
     }
