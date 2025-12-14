@@ -3,20 +3,20 @@ package org.dh;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode
 @Getter
-@Setter
 public class Course {
     private String courseId;
     private String courseName;
-    private double credits;
-    private Department department;
-    private List<Assignment> assignments;
-    private List<Student> registeredStudents;
+    @Setter private double credits;
+    @Setter private Department department;
+    @Setter private List<Assignment> assignments;
+    @Setter private List<Student> registeredStudents;
     private List<Integer> finalScores;
     private static int nextId = 1;
 
@@ -28,11 +28,12 @@ public class Course {
             List<Student> registeredStudents) {
 
         this.courseId = String.format("C-%s-%02d", department.getDepartmentId(), nextId++);
-        this.courseName = courseName;
+        this.courseName = Util.toTitleCase(courseName);
         this.credits = credits;
         this.department = department;
         this.assignments = assignments;
         this.registeredStudents = registeredStudents;
+        this.finalScores = new ArrayList<>();
     }
 
     /**
@@ -84,10 +85,11 @@ public class Course {
             int total = 0;
 
             for (Assignment assignment : assignments) {
-                total += assignment.getScores().get(i);
+                int assignmentScore = assignment.getScores().get(i);
+                total += (int) (assignmentScore * (assignment.getWeight() / 100));
             }
 
-            studentsAvg[i] = total / assignments.size();
+            studentsAvg[i] = total;
         }
 
         return studentsAvg;
@@ -110,12 +112,14 @@ public class Course {
      * student.
      */
     public void generateScores() {
-        for (int i = 0; i < registeredStudents.size(); i++) {
-            int total = 0;
-
+        for (Student student : registeredStudents) {
             for (Assignment assignment : assignments) {
                 assignment.generateRandomScore();
             }
+        }
+
+        for (int finalScore : calcStudentsAverage()) {
+            this.finalScores.add(finalScore);
         }
     }
 
@@ -129,31 +133,19 @@ public class Course {
         System.out.printf("%24s", "");
 
         for (int i = 0; i < assignments.size(); i++) {
-            System.out.printf("%-15s", assignments.get(i).getAssignmentName());
+            System.out.printf("%15s", assignments.get(i).getAssignmentName());
         }
 
         System.out.printf("%15s\n", "Final Score");
 
         for (int i = 0; i < registeredStudents.size(); i++) {
-            int[] scores = new int[assignments.size()];
-            int[] weightedScores = new int[assignments.size()];
-
             System.out.printf("%22s", registeredStudents.get(i).getStudentName());
 
             for (int j = 0; j < assignments.size(); j++) {
-                scores[j] = assignments.get(j).getScores().get(i);
-                weightedScores[j] = (int) (scores[j] * (assignments.get(j).getWeight() / 100));
-
-                System.out.printf("%14d", scores[j]);
+                System.out.printf("%14d", assignments.get(j).getScores().get(i));
             }
 
-            int finalScore = 0;
-
-            for (int j = 0; j < weightedScores.length; j++) {
-                finalScore += weightedScores[j];
-            }
-
-            System.out.printf("%14d\n", finalScore);
+            System.out.printf("%14d\n", finalScores.get(i));
         }
     }
 
@@ -170,6 +162,10 @@ public class Course {
                 ", credits=" + credits +
                 ", departmentName=" + department.getDepartmentName() +
                 '}';
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = Util.toTitleCase(courseName);
     }
 
     @Override

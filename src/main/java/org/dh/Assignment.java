@@ -29,8 +29,12 @@ public class Assignment {
      */
     public double calcAssignmentAvg() {
         double total = 0;
-
+        System.out.println(scores);
         for (Integer score : scores) {
+            if (score == null) {
+                continue;
+            }
+
             total += score;
         }
 

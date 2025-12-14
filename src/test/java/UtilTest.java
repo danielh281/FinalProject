@@ -6,10 +6,20 @@ import util.Util;
 
 public class UtilTest {
     @Test
-    @DisplayName("toTitleCase: he llo -> He Llo")
+    @DisplayName("toTitleCase: DISCRETE MATH -> Discrete Math")
     void toTitleCaseTest1() {
-        String input = "he llo";
-        String expected = "He Llo";
+        String input = "DISCRETE MATH";
+        String expected = "Discrete Math";
+        String result = Util.toTitleCase(input);
+
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("toTitleCase: computer sciencE and mAth -> Computer Science And Math")
+    void toTitleCaseTest2() {
+        String input = "computer sciencE and mAth";
+        String expected = "Computer Science And Math";
         String result = Util.toTitleCase(input);
 
         Assertions.assertEquals(expected, result);
@@ -17,7 +27,7 @@ public class UtilTest {
 
     @Test
     @DisplayName("toTitleCase: null -> null")
-    void toTitleCaseTest2() {
+    void toTitleCaseTest3() {
         String input = null;
         String expected = null;
         String result = Util.toTitleCase(input);
