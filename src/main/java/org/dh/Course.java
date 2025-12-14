@@ -75,8 +75,8 @@ public class Course {
     }
 
     /**
-     * Calculates the weighted average score of a student
-     * @return
+     * Calculates the weighted average score of all students.
+     * @return The weighted average scores of all students
      */
     public int[] calcStudentsAverage() {
         int[] studentsAvg = new int[registeredStudents.size()];
@@ -132,8 +132,8 @@ public class Course {
         System.out.printf("Course: %s(%s)\n", courseName, courseId);
         System.out.printf("%24s", "");
 
-        for (int i = 0; i < assignments.size(); i++) {
-            System.out.printf("%15s", assignments.get(i).getAssignmentName());
+        for (Assignment assignment : assignments) {
+            System.out.printf("%15s", assignment.getAssignmentName());
         }
 
         System.out.printf("%15s\n", "Final Score");
@@ -141,8 +141,8 @@ public class Course {
         for (int i = 0; i < registeredStudents.size(); i++) {
             System.out.printf("%22s", registeredStudents.get(i).getStudentName());
 
-            for (int j = 0; j < assignments.size(); j++) {
-                System.out.printf("%14d", assignments.get(j).getScores().get(i));
+            for (Assignment assignment : assignments) {
+                System.out.printf("%14d", assignment.getScores().get(i));
             }
 
             System.out.printf("%14d\n", finalScores.get(i));
